@@ -17,13 +17,17 @@ ser = serial.Serial(
 ser.write('Give\n')
 
 x=ser.readline()
-print x
+# print x
 
 x = x.replace(' |', '')
-print x
+# print x
 
 data = x.split()
-print data[0]
+# print data[0]
+# Scale the values that need to be scaled
+data[5] = float(data[5])/100.0
+data[6] = float(data[6])/10000.0
+data[7] = float(data[7])/1000.0
 
 try:
     db = sqlite3.connect('/home/pi/ECE331/datalogger/datalogger.db')
