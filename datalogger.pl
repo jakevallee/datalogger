@@ -6,12 +6,7 @@ use strict;
 use warnings;
 use DBI;
 
-my $driver = "SQLite";
-my $database = "piDat.db";
-my $dsn = "DBI:$driver:dbname=$database";
-my $userid = "";
-my $password = "";
-my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 })
+my $dbh = DBI->connect("dbi:SQLite3:dbname=datalogger.pl","","")
         or die $DBI::errstr;
 
 
@@ -29,16 +24,16 @@ until ($mydata ne "") {
         sleep .5;
 }
 
-printf "%s\n", $mydata;
+# printf "%s\n", $mydata;
 
 $mydata =~ s/\|/ /g;
 $mydata =~ s/ +/ /g;
 printf "%s\n", $mydata;
 
 my @data = split / /, $mydata;
-#printf("%s\n", @data);
+printf("%s\n", @data);
 
-my $command = qq(INSERT INTO piDat(Date, Time, TEMP1, IR, FULL, VIS, LUX, TEMP2, PRESSURE, HUMID) VALUES(datetime('now'), datetime('now'), $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7]));
+my $command = qq(INSERT INTO pidata(DateTime,TEMP1,IR,FULL,VIS,LUX,TEMP2,PRESSURE,HUMID) VALUES(datetime('now'),$data[0],$data[1],$data[2],$data[3],$data[4],$data[5],$data[6],$data[7]));
 
 printf("About to update\n");
 $dbh->do($command) or die "Error exec\n";
