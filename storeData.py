@@ -19,15 +19,26 @@ ser.write('Give\n')
 x=ser.readline()
 print x
 
+x = x.replace(' |', '')
+print x
 
+data = x.split()
+print data[0]
 
-#TEMP1 = sys.argv[1]
-#IR = sys.argv[2]
-#FULL = sys.argv[3]
-#VIS = sys.argv[4]
-#LUX = sys.argv[5]
-#TEMP2 = sys.argv[6]
-#PRESSURE = sys.argv[7]
-#HUMID = sys.argv[8]
+try:
+    db = sqlite3.connect('/home/pi/ECE331/datalogger/datalogger.db')
 
+    now = datetime.datetime.now()
+    time = now.strftime("%H:%M:%S")
+    date = now.strftime("%Y-%m-%d")
 
+    temp = db.cursor()
+    temp.execute("INSERT INTO pidata(Date, Time, TEMP1, IR, FULL, VIS, LUX, TEMP2, PRESSURE, HUMID) VALUES (?,?,?,?,?,?,?,?,?,?)",(date,time,data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]))
+
+    db.commit()
+
+except sqlite3.Error, e:
+    print "Error: %s" % e.args[0]
+    sys.exit(1)
+
+    db.close()
