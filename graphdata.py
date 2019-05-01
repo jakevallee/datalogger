@@ -1,3 +1,9 @@
+#!/usr/bin/python
+
+#This script was for plotting the data with plot.ly but this ended up bring
+#harder than i expected and used up a lot of my time. Doesn't work
+
+#Import dependencies
 import plotly.plotly as py
 import plotly.graph_objs as go
 from plotly import tools
@@ -7,8 +13,10 @@ import time
 import datetime
 from datetime import datetime as dt
 
+#Connect to the database
 db = sqlite3.connect('/home/pi/ECE331/datalogger/datalogger.db')
 
+#Create a cursor to enable editing
 cursor = db.cursor()
 cursor.execute('SELECT * FROM pidata DESC LIMIT 1400')
 
@@ -19,6 +27,7 @@ df = pd.DataFrame([[ij for ij in i] for i in rows])
 
 df.rename(columns={0: 'Date', 1: 'Time', 2: 'TEMP1', 3: 'IR', 4: 'FULL', 5: 'VIS', 6: 'LUX', 7: 'TEMP2', 8: 'PRESSURE', 9: 'HUMID'}, inplace=True);
 
+#Settup each plot
 temp = go.Scatter(
         x=df['Time'],
         y=df['TEMP1'],
@@ -68,6 +77,8 @@ humid = go.Scatter(
         name='Temp 1'
         )
 
+#Configure the plots
+
 fig = tools.make_subplots(rows = 8, cols = 1, subplot_titles = ('Temperature v Time','IR v. Time','FULL v. Time','VIS v. Time','LUX v. Time','Temperature2 v. Time','Pressure v. Time','HUMID v. Time'))
 fig.append_trace(temp,1,1)
 fig.append_trace(IR,2,1)
@@ -99,4 +110,5 @@ fig['layout']['yaxis8'].update(title = 'Time')
 
 fig['layout'].update(title = 'Weather Station Data')
 
+#Plot
 py.iplot(fig, filename='sensorplots.html')

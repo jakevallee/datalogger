@@ -1,11 +1,16 @@
 #!/usr/bin/python
 
+#This script connects to the piHat via serial and takes that data and stores it
+#in a sqlite3 database for it to then later be accessed and used by the ChartJS
+#script
+
 import sys
 import sqlite3
 import datetime
 import time
 import serial
 
+#Connect serial device
 ser = serial.Serial(
         port='/dev/ttyACM0',
         baudrate = 115200,
@@ -35,7 +40,8 @@ try:
     now = datetime.datetime.now()
     time = now.strftime("%H:%M:%S")
     date = now.strftime("%Y-%m-%d")
-
+    
+    #Insert data from piHat into database 
     temp = db.cursor()
     temp.execute("INSERT INTO pidata(Date, Time, TEMP1, IR, FULL, VIS, LUX, TEMP2, PRESSURE, HUMID) VALUES (?,?,?,?,?,?,?,?,?,?)",(date,time,data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]))
 
