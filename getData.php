@@ -1,26 +1,62 @@
-// This script is for taking the data from the database and formating it in json
-// so it can be red by the chartJS script
 <?php
 
+#This script is for taking the data from the database and formating it in json
+#so it can be red by the chartJS script
 
-$db = new PDO('sqlite:datalogger.db');
+$db = new SQLite3('datalogger.db');
 
 $temp = $db->query('SELECT * FROM pidata DESC LIMIT 1440');
 
-$temp->setFetchMode(PDO::FETCH_ASSOC);
-
 $sample = array();
 
-while($row = $temp->fetch()) {
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
 
-  extract($row);
+#  extract($row);
+#  $sample[] = array($Date, $Time, $TEMP1, $IR, $FULL, $VIS, $LUX, $TEMP2, $PRESSURE, $HUMID);
+#  $jsonArray[] = $row;
 
-  $sample[] = array($Date, $Time, $TEMP1, $IR, $FULL, $VIS, $LUX, $TEMP2, $PRESSURE, $HUMID);
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['TEMP1'];
+  $finalData['data1'][] = $storeData;
+}
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['IR'];
+  $finalData['data2'][] = $storeData;
+}
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['FULL'];
+  $finalData['data3'][] = $storeData;
+}
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['VIS'];
+  $finalData['data4'][] = $storeData;
+}
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['LUX'];
+  $finalData['data5'][] = $storeData;
+}
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['TEMP2'];
+  $finalData['data6'][] = $storeData;
+}
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['PRESSURE'];
+  $finalData['data7'][] = $storeData;
+}
+while($row = $temp->fetchArray(SQLITE3_ASSOC)) {
+  $storeData['t'] = $row['Time'];
+  $storeData['y'] = $row['HUMID'];
+  $finalData['data8'][] = $storeData;
 }
 
-$data = json_encode($sample);
-# file_put_contents($file, "data1");
-# file_put_contents($file, $data);
+
+echo json_encode($finalData,JSON_PRETTY_PRINT);
 
 ?>
 
